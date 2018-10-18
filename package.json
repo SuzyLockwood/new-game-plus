@@ -1,0 +1,11 @@
+{
+  "name": "new-game-plus",
+  "version": "1.0.0",
+  "description": "A Yelp-like application for gamers to discuss games\u001b[D\u001b[D\u001b[D\u001b[D\u001b[D\u001b[D and review",
+  "main": "src/server.js",
+  "scripts": {
+    "test": "set NODE_ENV=test && jasmine"
+  },
+  "author": "Suzy Lockwood",
+  "license": "ISC"
+}
