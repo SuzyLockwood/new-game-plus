@@ -34,13 +34,13 @@ module.exports = {
         res.redirect('/users/sign_in');
       } else {
         req.flash('notice', 'You have successfully signed in!');
-        res.redirect('/');
+        res.redirect('/games');
       }
     });
   },
   signOut(req, res, next) {
     req.logout();
     req.flash('notice', 'You have successfully signed out!');
-    res.redirect('/');
+    res.redirect('/games');
   }
 };

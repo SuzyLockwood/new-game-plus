@@ -1,32 +1,29 @@
 'use strict';
 module.exports = (sequelize, DataTypes) => {
-  var User = sequelize.define(
-    'User',
+  var Game = sequelize.define(
+    'Game',
     {
-      username: {
+      title: {
         type: DataTypes.STRING,
         allowNull: false
       },
-      email: {
+      image: {
         type: DataTypes.STRING,
-        allowNull: false,
-        validate: {
-          isEmail: { msg: 'must be a valid email' }
-        }
+        allowNull: false
       },
-      password: {
+      description: {
         type: DataTypes.STRING,
         allowNull: false
       }
     },
     {}
   );
-  User.associate = function(models) {
+  Game.associate = function(models) {
     // associations can be defined here
-    User.hasMany(models.Game, {
+    Game.belongsTo(models.User, {
       foreignKey: 'userId',
-      as: 'games'
+      onDelete: 'CASCADE'
     });
   };
-  return User;
+  return Game;
 };

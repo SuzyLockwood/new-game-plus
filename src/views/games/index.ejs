@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <% include ../static/partials/head.ejs %>
+</head>
+
+<body>
+    <main class="container">
+        <% include ../static/partials/messages.ejs %>
+        <% include ../static/partials/navbar.ejs %>
+
+        <header class="jumbotron">
+            <div class="container">
+                <h1>Welcome to New Game Plus!</h1>
+                <p>View our trusted video game reviews on the latest and greatest games.</p>
+                <p>
+                    <a class="btn btn-primary btn-lg" href="/games/new">Add New Game Review</a>
+                </p>
+            </div>
+        </header>
+
+        <div class="row">
+            <div class="col-lg-12">
+                <h3 class="trending">New and Trending</h3>
+            </div>
+        </div>
+
+        <div class="row text-center" style="display:flex; flex-wrap: wrap;">
+            <% games.forEach(function(game) { %>
+            <div class="col-md-3 col-sm-6">
+                <div class="thumbnail">
+                    <img src='<%= game.image %>'>
+                    <div class="caption">
+                        <h4>
+                            <%= game.title %>
+                        </h4>
+                    </div>
+                    <p>
+                        <a href="/games/<%= game.id %>" class="btn btn-primary">More Info</a>
+                    </p>
+                </div>
+            </div>
+            <% }); %>
+        </div>
+        </div>
+
+    </main>
+</body>
+
+</html>
