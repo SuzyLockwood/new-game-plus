@@ -25,6 +25,19 @@
             <form style="display:initial" action="/games/<%= game.id %>/destroy" method="post">
                 <button type="submit" class="btn btn-danger">Delete</button>
             </form>
+            <hr>
+
+            <section id="review-list">
+                <% if(game.reviews) { %>
+                <% game.reviews.forEach((review) => { %>
+                <%- include("../reviews/show.ejs", {review}) %>
+                <% }) %>
+                <% } %>
+            </section>
+            <div>
+                <a class="btn btn-primary btn-lg" href="/games/:gameId/reviews/new">Write a New Review</a>
+            </div>
+
     </main>
 
     <% include ../static/partials/baseScripts.ejs %>

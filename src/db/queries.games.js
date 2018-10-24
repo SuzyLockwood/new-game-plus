@@ -1,4 +1,6 @@
 const Game = require('./models').Game;
+const Review = require('./models').Review;
+const User = require('./models').User;
 
 module.exports = {
   getAllGames(callback) {
@@ -20,7 +22,15 @@ module.exports = {
       });
   },
   getGame(id, callback) {
-    return Game.findById(id)
+    return Game.findById(id, {
+      include: [
+        {
+          model: Review,
+          as: 'reviews',
+          include: [{ model: User }]
+        }
+      ]
+    })
       .then(game => {
         callback(null, game);
       })

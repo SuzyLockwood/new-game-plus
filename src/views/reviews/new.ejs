@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <% include ../static/partials/head.ejs %>
+</head>
+
+<body>
+    <% include ../static/partials/navbar.ejs %>
+
+    <main class="container">
+        <h1>New Review</h1>
+        <form action="/games/<%= gameId %>/reviews/create" method="post">
+            <div class=" form-group">
+                <label for="rating">Review rating</label>
+                <input type="number" class="form-control" name="rating" min="1" max="5" placeholder=5>
+                <small class="text-muted" id="ratingHelp">Rating must be whole numbers on 1-5 scale</small>
+            </div>
+
+            <div class="form-group">
+                <label for="body">Review body</label>
+                <textarea rows="4" class="form-control" name="body" placeholder="Enter Review body"></textarea>
+            </div>
+            <button type="submit" class="btn btn-primary">Submit</button>
+        </form>
+    </main>
+
+    <% include ../static/partials/baseScripts.ejs %>
+
+</body>
+
+</html>
