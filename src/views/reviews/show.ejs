@@ -13,10 +13,12 @@
         <%= review.createdAt %>
     </small>
 
-    <form style="display:initial" action="/games/<%= review.gameId %>/reviews/<%= review.id %>/reviews/<%= review.id %>/destroy"
-        method="post">
-        <button type="submit" class="btn btn btn-sm btn-outline-danger">Delete</button>
+    <% if(currentUser && currentUser.id === review.userId) { %>
+    <a href="/games/<%= review.gameId %>/reviews/<%= review.id %>/edit" class="btn btn-warning">Edit</a>
+    <form style="display:initial" action="/games/<%= review.gameId %>/reviews/<%= review.id %>/destroy" method="post">
+        <button type="submit" class="btn btn-danger">Delete</button>
     </form>
     <% } %>
     <hr>
 </div>
+<% } %>

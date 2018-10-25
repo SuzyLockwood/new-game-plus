@@ -3,7 +3,7 @@ const Game = require('./models').Game;
 const User = require('./models').User;
 
 module.exports = {
-  createReview(newReview, callback) {
+  addReview(newReview, callback) {
     return Review.create(newReview)
       .then(review => {
         callback(null, review);
@@ -13,7 +13,9 @@ module.exports = {
       });
   },
   getReview(id, callback) {
-    return Review.findById(id)
+    return Review.findById(id, {
+      include: [{ model: Game }, { model: User }]
+    })
       .then(review => {
         callback(null, review);
       })
@@ -32,6 +34,7 @@ module.exports = {
         callback(err);
       });
   },
+
   updateReview(id, updatedReview, callback) {
     return Review.findById(id).then(review => {
       if (!review) {

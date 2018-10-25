@@ -1,11 +1,9 @@
 const reviewQueries = require('../db/queries.reviews.js');
+const Authorizer = require('../policies/application');
 
 module.exports = {
   new(req, res, next) {
     res.render('reviews/new', { gameId: req.params.gameId });
-    console.log(req.params.gameId);
-    console.log(req.params);
-    console.log(req.game.id);
   },
   create(req, res, next) {
     let newReview = {
@@ -14,23 +12,26 @@ module.exports = {
       gameId: req.params.gameId,
       userId: req.user.id
     };
-    reviewQueries.createReview(newReview, (err, review) => {
+    reviewQueries.addReview(newReview, (err, review) => {
       if (err) {
-        res.redirect(500, '/games');
+        res.redirect(500, '/reviews/new');
       } else {
-        res.redirect(req.headers.referer);
+        res.redirect(303, `/games/${newReview.gameId}`);
       }
     });
   },
+
   show(req, res, next) {
     reviewQueries.getReview(req.params.id, (err, review) => {
       if (err || review == null) {
+        console.log(err);
         res.redirect(404, '/');
       } else {
         res.render('reviews/show', { review });
       }
     });
   },
+
   destroy(req, res, next) {
     reviewQueries.deleteReview(req.params.id, (err, deletedRecordsCount) => {
       if (err) {
@@ -43,15 +44,18 @@ module.exports = {
       }
     });
   },
+
   edit(req, res, next) {
     reviewQueries.getReview(req.params.id, (err, review) => {
       if (err || review == null) {
         res.redirect(404, '/');
+        console.log(err);
       } else {
         res.render('reviews/edit', { review });
       }
     });
   },
+
   update(req, res, next) {
     reviewQueries.updateReview(req.params.id, req.body, (err, review) => {
       if (err || review == null) {
@@ -60,7 +64,7 @@ module.exports = {
           `/games/${req.params.gameId}/reviews/${req.params.id}/edit`
         );
       } else {
-        res.redirect(`/games/${req.params.gameId}/reviews/${req.params.id}`);
+        res.redirect(303, `/games/${req.params.gameId}`);
       }
     });
   }

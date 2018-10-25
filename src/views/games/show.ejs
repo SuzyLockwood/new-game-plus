@@ -21,10 +21,12 @@
                     </p>
                 </div>
             </div>
+            <% if(currentUser && currentUser.id === game.userId) { %>
             <a href="/games/<%= game.id %>/edit" class="btn btn-warning">Edit</a>
             <form style="display:initial" action="/games/<%= game.id %>/destroy" method="post">
                 <button type="submit" class="btn btn-danger">Delete</button>
             </form>
+            <% } %>
             <hr>
 
             <section id="review-list">
@@ -35,7 +37,7 @@
                 <% } %>
             </section>
             <div>
-                <a class="btn btn-primary btn-lg" href="/games/:gameId/reviews/new">Write a New Review</a>
+                <a class="btn btn-primary btn-lg" href="/games/<%= game.id %>/reviews/new">Write a New Review</a>
             </div>
 
     </main>

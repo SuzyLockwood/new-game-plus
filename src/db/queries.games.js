@@ -1,6 +1,7 @@
 const Game = require('./models').Game;
 const Review = require('./models').Review;
 const User = require('./models').User;
+const Authorizer = require('../policies/application');
 
 module.exports = {
   getAllGames(callback) {
@@ -38,32 +39,45 @@ module.exports = {
         callback(err);
       });
   },
-  deleteGame(id, callback) {
-    return Game.destroy({
-      where: { id }
-    })
+  deleteGame(req, callback) {
+    return Game.findById(req.params.id)
       .then(game => {
-        callback(null, game);
+        const authorized = new Authorizer(req.user, game).destroy();
+
+        if (authorized) {
+          game.destroy().then(res => {
+            callback(null, game);
+          });
+        } else {
+          req.flash('notice', 'You are not authorized to do that.');
+          callback(401);
+        }
       })
       .catch(err => {
         callback(err);
       });
   },
-  updateGame(id, updatedGame, callback) {
-    return Game.findById(id).then(game => {
+  updateGame(req, updatedGame, callback) {
+    return Game.findById(req.params.id).then(game => {
       if (!game) {
         return callback('Game not found');
       }
-      game
-        .update(updatedGame, {
-          fields: Object.keys(updatedGame)
-        })
-        .then(() => {
-          callback(null, game);
-        })
-        .catch(err => {
-          callback(err);
-        });
+      const authorized = new Authorizer(req.user, game).update();
+      if (authorized) {
+        game
+          .update(updatedGame, {
+            fields: Object.keys(updatedGame)
+          })
+          .then(() => {
+            callback(null, game);
+          })
+          .catch(err => {
+            callback(err);
+          });
+      } else {
+        req.flash('notice', 'You are not authorized to do that.');
+        callback('Forbidden');
+      }
     });
   }
 };

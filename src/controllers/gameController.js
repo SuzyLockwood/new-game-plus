@@ -1,4 +1,5 @@
 const gameQueries = require('../db/queries.games.js');
+const Authorizer = require('../policies/application');
 
 module.exports = {
   index(req, res, next) {
@@ -38,9 +39,9 @@ module.exports = {
     });
   },
   destroy(req, res, next) {
-    gameQueries.deleteGame(req.params.id, (err, game) => {
+    gameQueries.deleteGame(req, (err, game) => {
       if (err) {
-        res.redirect(500, `/games/${game.id}`);
+        res.redirect(err, `/games/${req.params.id}`);
       } else {
         res.redirect(303, '/games');
       }
@@ -51,16 +52,22 @@ module.exports = {
       if (err || game == null) {
         res.redirect(404, '/');
       } else {
-        res.render('games/edit', { game });
+        const authorized = new Authorizer(req.user, game).edit();
+        if (authorized) {
+          res.render('games/edit', { game });
+        } else {
+          req.flash('You are not authorized to do that.');
+          res.redirect(`/games/${req.params.id}`);
+        }
       }
     });
   },
   update(req, res, next) {
-    gameQueries.updateGame(req.params.id, req.body, (err, game) => {
+    gameQueries.updateGame(req, req.body, (err, game) => {
       if (err || game == null) {
-        res.redirect(404, `/games/${req.params.id}/edit`);
+        res.redirect(401, `/games/${req.params.id}/edit`);
       } else {
-        res.redirect(`/games/${game.id}`);
+        res.redirect(`/games/${req.params.id}`);
       }
     });
   }
