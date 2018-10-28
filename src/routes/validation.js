@@ -1,5 +1,6 @@
 const User = require('../db/models').User;
 const Game = require('../db/models').Game;
+const Review = require('../db/models').Review;
 
 module.exports = {
   validateUsers(req, res, next) {
@@ -48,10 +49,6 @@ module.exports = {
   validateReviews(req, res, next) {
     if (req.method === 'POST') {
       req
-        .checkParams('gameId', 'must be valid')
-        .notEmpty()
-        .isInt();
-      req
         .checkBody('body', 'must be at least 5 characters in length')
         .isLength({ min: 5 });
     }
@@ -64,25 +61,28 @@ module.exports = {
     }
   },
 
+  // checkReviewExistence checks if a user already reviewed the game, only one review per user is allowed
   checkReviewExistence(req, res, next) {
-    Game.findById(req.params.id)
-      .populate('reviews')
-      .exec(function(err, foundGame) {
-        if (err || !foundGame) {
-          req.flash('error', 'Game not found.');
-          res.redirect('back');
-        } else {
-          //check if req.user.id exists in foundGame.reviews
-          let foundUserReview = foundGame.reviews.some(function(review) {
-            return review.userId.equals(req.user.id);
-          });
-          if (foundUserReview) {
+    //check if game exists
+    Game.findById(req.params.id).then(game => {
+      if (!game) {
+        req.flash('error', 'Game not found.');
+        res.redirect('back');
+      } else {
+        let currentUserId = req.user.id;
+        let currentGameId = req.params.id;
+        //check if review exists for game and user
+        Review.find({
+          where: { userId: currentUserId, gameId: currentGameId }
+        }).then(review => {
+          if (review) {
             req.flash('error', 'You already wrote a review for this game.');
-            return res.redirect('back');
+            res.redirect('back');
+          } else {
+            return next();
           }
-          //if the review was not found, go to the next middleware
-          next();
-        }
-      });
+        });
+      }
+    });
   }
 };

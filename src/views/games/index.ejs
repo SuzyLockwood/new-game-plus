@@ -6,16 +6,16 @@
 </head>
 
 <body>
+    <% include ../static/partials/navbar.ejs %>
+    <% include ../static/partials/functions.ejs %>
     <main class="container">
         <% include ../static/partials/messages.ejs %>
-        <% include ../static/partials/navbar.ejs %>
-
         <header class="jumbotron">
             <div class="container">
                 <h1>Welcome to New Game Plus!</h1>
                 <p>View our trusted video game reviews on the latest and greatest games.</p>
                 <p>
-                    <a class="btn btn-primary btn-lg" href="/games/new">Add New Game Recommendation</a>
+                    <a class="btn btn-primary btn-lg" href="/games/new">Add New Game</a>
                 </p>
             </div>
         </header>
@@ -27,17 +27,26 @@
         </div>
 
         <div class="row text-center" style="display:flex; flex-wrap: wrap;">
-            <% games.forEach(function(game) { %>
+            <% games.forEach((game) => { %>
             <div class="col-md-3 col-sm-6">
                 <div class="thumbnail">
                     <img src='<%= game.image %>'>
                     <div class="caption">
-                        <h5>
+                        <h4>
                             <%= game.title %>
-                        </h5>
+                        </h4>
+                        <% if ((calculateAverage(game.reviews)) == 0) { %>
+                        <em>No reviews yet.</em>
+                        <% } else { %>
+                        <span class="fa fa-star checked"></span>
+                        <span class="fa fa-star <% if ((calculateAverage(game.reviews)) > 1.5) { %> checked <% } %>"></span>
+                        <span class="fa fa-star <% if ((calculateAverage(game.reviews)) > 2.5) { %> checked <% } %>"></span>
+                        <span class="fa fa-star <% if ((calculateAverage(game.reviews)) > 3.5) { %> checked <% } %>"></span>
+                        <span class="fa fa-star <% if ((calculateAverage(game.reviews)) > 4.5) { %> checked <% } %>"></span>
+                        <% } %>
                     </div>
                     <p>
-                        <a href="/games/<%= game.id %>" class="btn btn-primary">More Info</a>
+                        <a href="/games/<%=game.id %>" class="btn btn-primary">More Info</a>
                     </p>
                 </div>
             </div>

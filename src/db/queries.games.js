@@ -5,7 +5,9 @@ const Authorizer = require('../policies/application');
 
 module.exports = {
   getAllGames(callback) {
-    return Game.all()
+    return Game.all({
+      include: [{ all: true, nested: true }]
+    })
       .then(games => {
         callback(null, games);
       })
@@ -24,13 +26,7 @@ module.exports = {
   },
   getGame(id, callback) {
     return Game.findById(id, {
-      include: [
-        {
-          model: Review,
-          as: 'reviews',
-          include: [{ model: User }]
-        }
-      ]
+      include: [{ all: true, nested: true }]
     })
       .then(game => {
         callback(null, game);
@@ -49,7 +45,7 @@ module.exports = {
             callback(null, game);
           });
         } else {
-          req.flash('notice', 'You are not authorized to do that.');
+          req.flash('error', 'You are not authorized to do that.');
           callback(401);
         }
       })
@@ -75,7 +71,7 @@ module.exports = {
             callback(err);
           });
       } else {
-        req.flash('notice', 'You are not authorized to do that.');
+        req.flash('error', 'You are not authorized to do that.');
         callback('Forbidden');
       }
     });

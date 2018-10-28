@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <% include ../static/partials/head.ejs %>
+</head>
+
+<body>
+    <% include ../static/partials/navbar.ejs %>
+    <% include ../static/partials/functions.ejs %>
+    <main class="container">
+        <% include ../static/partials/messages.ejs %>
+        <div class="row">
+            <div class="col-md-12">
+                <h1 style="text-align: center">Review Page:
+                    <%= game.title %>
+                </h1>
+                <a href="/games/<%= game.id %>">Go back to the game page</a>
+                <div class="thumbnail">
+                    <div class="caption-full">
+                        <% if ((calculateAverage(game.reviews)) === 0) { %>
+                        <h5>
+                            <em>No reviews yet.</em>
+                        </h5>
+                        <% } else { %>
+                        <p>
+                            <span class="fa fa-star checked"></span>
+                            <span class="fa fa-star <% if ((calculateAverage(game.reviews)) > 1.5) { %> checked <% } %>"></span>
+                            <span class="fa fa-star <% if ((calculateAverage(game.reviews)) > 2.5) { %> checked <% } %>"></span>
+                            <span class="fa fa-star <% if ((calculateAverage(game.reviews)) > 3.5) { %> checked <% } %>"></span>
+                            <span class="fa fa-star <% if ((calculateAverage(game.reviews)) > 4.5) { %> checked <% } %>"></span>
+                            <em>(total reviews:
+                                <%= game.reviews.length %>)</em>
+                        </p>
+                        <p>
+                            Current game rating: <strong>
+                                <%= calculateAverage(game.reviews); %></strong>
+                        </p>
+                        <p>
+                            <h4>All reviews for this game:</h4>
+
+
+
+                        </p>
+                        <hr style="margin-top: 0;">
+                        <% game.reviews.forEach(function(review){ %>
+                        <div class="row">
+                            <div class="col-md-3">
+                                <%- '<span class="fa fa-star checked"></span>'.repeat(review.rating) %>
+                                <%- '<span class="fa fa-star"></span>'.repeat(5 - review.rating) %>
+                                <div>Review by: <strong>
+                                        <%= review.User.username %></strong></div>
+                                <span><em>
+                                        <%= review.updatedAt.toDateString() %></em></span>
+                            </div>
+                            <div class="col-md-9">
+                                <p style="text-align: justify; word-wrap: break-word;">
+                                    <%= review.body %>
+                                </p>
+                                <% if(currentUser) { %>
+                                <% if (review.User.id === currentUser.id){ %>
+                                <a class="btn btn-xs btn-warning" href="/games/<%=review.gameId %>/reviews/<%=review.id %>/edit"">Edit</a>
+                        <form id="
+                                    delete-form" action="/games/<%=review.gameId %>/reviews/<%=review.id %>/destroy"
+                                    method="POST">
+                                    <input type="submit" class="btn btn-xs btn-danger" value="Delete">
+                                    </form>
+                                    <% } %>
+                                    <% } %>
+                            </div>
+                        </div>
+                        <hr>
+                        <% }); %>
+                        <% } %>
+                        <div>
+                            <a class="btn btn-primary btn-lg" href="/games/<%=game.id %>/reviews/new">
+                                Write your Review</a>
+                        </div>
+                        <div style="margin-top: 10px;">
+                            <a class="btn btn-default" href="/games/<%=game.id %>"><i class="fa fa-arrow-left"></i>
+                                Go back</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
+    </main>
+    <% include ../static/partials/baseScripts.ejs %>
+
+</body>
+
+</html>

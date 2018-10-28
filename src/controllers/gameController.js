@@ -25,6 +25,7 @@ module.exports = {
       if (err) {
         res.redirect(500, '/games/new');
       } else {
+        req.flash('success', req.body.title + ' successfully added.');
         res.redirect(303, `/games/${game.id}`);
       }
     });
@@ -43,6 +44,7 @@ module.exports = {
       if (err) {
         res.redirect(err, `/games/${req.params.id}`);
       } else {
+        req.flash('success', 'Game has been successfully deleted.');
         res.redirect(303, '/games');
       }
     });

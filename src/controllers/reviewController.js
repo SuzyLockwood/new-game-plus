@@ -2,32 +2,37 @@ const reviewQueries = require('../db/queries.reviews.js');
 const Authorizer = require('../policies/application');
 
 module.exports = {
+  index(req, res, next) {
+    reviewQueries.getAllGameReviews(req.params.id, (err, game) => {
+      if (err || game == null) {
+        res.redirect(404, '/');
+      } else {
+        res.render('reviews/index', { game });
+      }
+    });
+  },
   new(req, res, next) {
-    res.render('reviews/new', { gameId: req.params.gameId });
+    reviewQueries.getNewReviewForm(req.params.id, (err, game) => {
+      if (err || game == null) {
+        res.redirect(404, '/games');
+      } else {
+        res.render('reviews/new', { game });
+      }
+    });
   },
   create(req, res, next) {
     let newReview = {
       rating: req.body.rating,
       body: req.body.body,
-      gameId: req.params.gameId,
+      gameId: req.params.id,
       userId: req.user.id
     };
     reviewQueries.addReview(newReview, (err, review) => {
       if (err) {
         res.redirect(500, '/reviews/new');
       } else {
+        req.flash('success', 'Thank you for your review!');
         res.redirect(303, `/games/${newReview.gameId}`);
-      }
-    });
-  },
-
-  show(req, res, next) {
-    reviewQueries.getReview(req.params.id, (err, review) => {
-      if (err || review == null) {
-        console.log(err);
-        res.redirect(404, '/');
-      } else {
-        res.render('reviews/show', { review });
       }
     });
   },
@@ -40,6 +45,7 @@ module.exports = {
           `/games/${req.params.gameId}/reviews/${req.params.id}`
         );
       } else {
+        req.flash('success', 'Review has been successfully deleted.');
         res.redirect(303, `/games/${req.params.gameId}`);
       }
     });

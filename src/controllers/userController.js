@@ -19,8 +19,8 @@ module.exports = {
       } else {
         passport.authenticate('local')(req, res, () => {
           req.flash(
-            'notice',
-            'Successfully Signed Up! Nice to meet you, ' +
+            'success',
+            'Welcome to New Game Plus! Nice to meet you, ' +
               req.body.username +
               '.'
           );
@@ -35,17 +35,17 @@ module.exports = {
   signIn(req, res, next) {
     passport.authenticate('local')(req, res, function() {
       if (!req.user) {
-        req.flash('notice', 'Sign in failed. Please try again.');
+        req.flash('error', 'Sign in failed. Please try again.');
         res.redirect('/users/sign_in');
       } else {
-        req.flash('notice', 'Welcome back, ' + req.body.username + '!');
-        res.redirect('/games');
+        req.flash('success', 'Welcome back, ' + req.body.username + '!');
+        res.redirect('/');
       }
     });
   },
   signOut(req, res, next) {
     req.logout();
-    req.flash('notice', 'You have successfully logged out.');
+    req.flash('success', 'You have successfully logged out.');
     res.redirect('/games');
   }
 };

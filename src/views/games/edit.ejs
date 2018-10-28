@@ -6,11 +6,9 @@
 </head>
 
 <body>
-    <% include ../static/partials/messages.ejs %>
     <% include ../static/partials/navbar.ejs %>
-
     <main class="container">
-
+        <% include ../static/partials/messages.ejs %>
         <h1>Edit Game</h1>
 
         <form action="/games/<%= game.id %>/update" method="post">
