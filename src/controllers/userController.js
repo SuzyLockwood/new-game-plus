@@ -24,7 +24,7 @@ module.exports = {
               req.body.username +
               '.'
           );
-          res.redirect('/');
+          res.redirect('/games');
         });
       }
     });
@@ -39,7 +39,7 @@ module.exports = {
         res.redirect('/users/sign_in');
       } else {
         req.flash('success', 'Welcome back, ' + req.body.username + '!');
-        res.redirect('/');
+        res.redirect('/games');
       }
     });
   },
